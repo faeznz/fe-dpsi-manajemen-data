@@ -6,15 +6,19 @@ const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // State loading untuk indikator loading
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Mengatur loading menjadi true saat proses submit dimulai
     try {
       await login(username, password);
       navigate('/');
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false); // Mengatur loading kembali menjadi false setelah proses selesai
     }
   };
 
@@ -36,8 +40,12 @@ const LoginForm = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         {error && <p className='text-red-500'>{error}</p>}
-        <button type="submit" className='bg-[#7EA9B2] flex justify-center items-center text-white text-xs h-8 rounded-lg mt-12'>
-          Login
+        <button
+          type="submit"
+          className={`flex justify-center items-center text-white text-xs h-8 rounded-lg mt-12 ${loading ? 'bg-gray-500' : 'bg-[#7EA9B2]'}`}
+          disabled={loading}
+        >
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>

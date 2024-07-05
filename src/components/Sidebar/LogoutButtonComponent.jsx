@@ -1,11 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ImExit } from "react-icons/im";
 
 const LogoutButtonComponent = () => {
+  const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem('authToken');
-    window.location.href = '/login'; 
+    navigate('/login');
   };
 
   return (
