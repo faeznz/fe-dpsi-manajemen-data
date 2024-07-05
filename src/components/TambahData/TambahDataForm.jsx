@@ -8,11 +8,13 @@ const TambahDataFormComponent = () => {
   const [description, setKeterangan] = useState('BAIK');
   const [dateIn, setTanggalMasuk] = useState('');
   const [dateOut, setTanggalKeluar] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleTambahClick = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const data = {
         name,
@@ -25,6 +27,8 @@ const TambahDataFormComponent = () => {
       navigate('/');
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,9 +86,10 @@ const TambahDataFormComponent = () => {
         {error && <p className='text-red-500'>{error}</p>}
         <button 
           type="submit"
-          className='bg-[#359DAC] text-white text-xs font-semibold h-8 rounded-lg mt-12'
+          className={`text-white text-xs font-semibold h-8 rounded-lg mt-12 ${loading ? 'bg-gray-500' : 'bg-[#359DAC]'}`}
+          disabled={loading}
         >
-          Tambah
+          {loading ? 'Loading...' : 'Tambah'}
         </button>
         <button 
           onClick={handleBatalClick} 
@@ -94,7 +99,7 @@ const TambahDataFormComponent = () => {
         </button>
       </form> 
     </div>
-  )
-}
+  );
+};
 
 export default TambahDataFormComponent;

@@ -4,29 +4,26 @@ import SideNav from '../components/Sidebar/SideNav';
 import StatistikCardComponent from '../components/Statistik/StatistikCardComponent';
 import { fetchStatistikData } from '../controllers/statistikController';
 import LogoutButtonComponent from '../components/Sidebar/LogoutButtonComponent';
+import LottieLoading from '../components/Lottie/LottieLoading';
 
 const StatistikPage = () => {
   const [data, setData] = useState([]);
-  const [username, setUsername] = useState('');
+  const [loading, setLoading] = useState(true); // State loading
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true); // Set loading to true when fetching starts
         const transformedData = await fetchStatistikData();
         setData(transformedData);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false); // Set loading to false when fetching ends
       }
     };
 
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
   }, []);
 
   return (
@@ -44,17 +41,22 @@ const StatistikPage = () => {
           <p className='text-4xl font-bold text-[#397683]'>STATISTIK DATA</p>
           <div className='flex flex-row gap-2 justify-center items-center'>
             <div className='h-6 w-6 bg-[#397683] rounded-full'></div>
-            <p className='text-[#397683]'>{username}</p>
+            <p className='text-[#397683]'>{localStorage.getItem('username')}</p>
           </div>
         </div>
         <div className='bg-[#D5E2E5] w-full min-h-full flex flex-col justify-center items-center p-12'>
-          {data.map((monthData, index) => (
-            <StatistikCardComponent
-              key={index}
-              month={monthData.month}
-              values={monthData.values}
-            />
-          ))}
+          {loading ? (
+            <LottieLoading/>
+          ) : (
+            data.map((monthData, index) => (
+              <StatistikCardComponent
+                key={index}
+                month={monthData.month}
+                values={monthData.values}
+                loading={loading}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
